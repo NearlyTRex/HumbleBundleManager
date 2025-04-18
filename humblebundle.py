@@ -752,7 +752,7 @@ def main(argv=None):
         hb.update()
 
     if args.clear:
-        clear_auth()
+        clear_auth(args)
 
     if args.list is not None:
         games = hb.games
@@ -846,7 +846,7 @@ def main(argv=None):
             parser.print_usage()
 
 
-def clear_auth(appname=None, authfile=None, cookiejar=None):
+def clear_auth(args, appname=None, authfile=None, cookiejar=None):
     '''Clear all authentication data and delete related files'''
 
     appname   = appname   or APPNAME
@@ -857,7 +857,7 @@ def clear_auth(appname=None, authfile=None, cookiejar=None):
 
     log.info("Clearing all authentication data")
 
-    if keyring:
+    if args.keyring and keyring:
         try:
             log.debug("Removing credentials from keyring")
             keyring.delete_password(appname, appname)
@@ -884,7 +884,7 @@ def read_config(args, appname=None, authfile=None):
     password = ""
 
     # read
-    if keyring:
+    if args.keyring and keyring:
         log.debug("Reading credentials from keyring")
         try:
             username, password = (
@@ -919,7 +919,7 @@ def read_config(args, appname=None, authfile=None):
     # save
     if args.username or args.password:
         log.info("Saving credentials")
-        if keyring:
+        if args.keyring and keyring:
             keyring.set_password(appname, appname,
                                  '%s\n%s' % (args.username or username,
                                              args.password or password,))
@@ -964,6 +964,9 @@ def parseargs(argv=None):
     group.add_argument('-C', '--clear',
                        default=False, action="store_true",
                        help="Clear all authentication data, deleting related files")
+    group.add_argument('-K', '--keyring',
+                       default=False, action="store_true",
+                       help="Use keyring for authentication")
 
     group = parser.add_argument_group("Commands")
     group.add_argument('-l', '--list', dest='list',
