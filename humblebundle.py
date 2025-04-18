@@ -947,6 +947,9 @@ def parseargs(argv=None):
     parser.add_argument('-D', '--debug', dest='loglevel',
                         action="store_const", const="debug",
                         help="Output debug information")
+    parser.add_argument('-Q', '--quiet', dest='loglevel',
+                        action="store_const", const="critical",
+                        help="Output only necessary information")
     parser.add_argument('-u', '--update', dest='update',
                         default=False, action="store_true",
                         help="Fetch all games and bundles data from the server,"
